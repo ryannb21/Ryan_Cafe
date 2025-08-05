@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="../static/styles/cafe_app.css" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='styles/cafe_app.css') }}" rel="stylesheet" />
   <title>Order Confirmation</title>
 </head>
 
@@ -21,7 +21,7 @@
     {% endfor %}
   </ul>
   <hr>
-  <a href="/">Place another order</a>
+  <a href="{{ url_for('index') }}">Place another order</a>
   </div>
 
   <!-- Client-side conversion of UTC ISO time to browser local timezone -->

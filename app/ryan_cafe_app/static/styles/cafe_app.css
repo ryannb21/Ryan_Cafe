@@ -142,8 +142,17 @@ article.item {
 
 /* Inner label for quantity input */
 .item > label:last-of-type {
-  width: 100px;
+  flex: 0 0 100px;
   text-align: center;
+}
+
+.item > label:last-of-type input[type="number"] {
+      width: 50px;
+      max-width: 50px;
+      min-width: 0;
+      box-sizing: border-box;
+      display: inline-block;
+      padding: 4px;
 }
 
 /* Optional: Style the price and item name to align better */
