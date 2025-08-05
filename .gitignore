@@ -1,0 +1,29 @@
+###Python App Files###
+#Virtualenvs
+**/venv/
+**/.venv/
+
+#Byte compiled files
+**/__pycache__/
+**/*.py[cod]
+
+#Local env files
+**/.env
+
+###Terraform Files###
+#Terraform working directory
+**/.terraform/
+
+#State and backup files
+**/*.tfstate*
+
+#Local files
+**/.terraform.lock.hcl
+
+#.tfvars
+infra/cafe_infrastructure/terraform.tfvars
+
+###Log files, IDE, and OS artifacts###
+*.log
+.vscode/
+.DS_Store
