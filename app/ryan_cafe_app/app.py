@@ -46,6 +46,20 @@ def enforce_host_header():
     if hostname not in ALLOWED_HOSTS:
         abort(400, "Invalid host header")
 
+#Configuring HSTS, CSP, and X-Frame-Options security headers
+@app.after_request
+def set_security_headers(response):
+    response.headers['Strict-Transport-Security'] = "max-age=31536000; includeSubDomains; preload"
+    response.headers['X-Content-Type-Options'] = "nosniff"
+    response.headers['X-Frame-Options'] = "DENY"
+    response.headers['X-XSS-Protection'] = "1; mode=block"
+    response.headers['Referrer-Policy'] = "strict-origin-when-cross-origin"
+    response.headers['Content-Security-Policy'] = ("default-src 'self'; " 
+                                                   "img-src 'self' data:; "
+                                                   "style-src 'self' 'unsafe-inline';"
+    )
+    return response
+
 #Loading secret key from AWS Secrets Manager
 secret_key = get_secret(os.getenv("FLASK_CAFE_SECRET_NAME", "ryan-cafev6/flask_secret"), region_name=os.getenv("AWS_REGION", "us-east-1"))
 if secret_key is None:
