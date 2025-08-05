@@ -1,0 +1,129 @@
+#BACKEND.TFVARS SAMPLE
+bucket = "" #aws_s3_bucket output value goes here
+key = "terraform.tfstate"
+region = "us-east-1"
+dynamodb_table = "" #aws_dynamodb_table output value goes here
+encrypt = true
+
+#================================================
+
+#REST OF CONFIG TERRAFORM.TFVARS SAMPLE
+aws_region = ""
+
+vpc_cidr_block = ""
+
+vpc_name = "Ryan_Cafe_VPC"
+
+subnet_configs = {
+      "Public_SN1_Cafe" = {
+      cidr_block = ""
+      availability_zone = "us-east-1a" #Change this depending on which region you use, and I recommend you use 2 AZs for HA
+      public = true
+      }
+      "Public_SN2_Cafe" = {
+       cidr_block = ""
+       availability_zone = "us-east-1b"   
+       public = true  
+      }
+      "Private_SN1_App_Cafe" = {
+       cidr_block = ""
+       availability_zone = "us-east-1a"
+       public = false     #Keep the "false" value for all private subnets (App & DB)
+      }
+      "Private_SN2_App_Cafe" = {
+       cidr_block = ""
+       availability_zone = "us-east-1b"
+       public = false     
+      }
+      "Private_SN1_DB_Cafe" = {
+       cidr_block = ""
+       availability_zone = "us-east-1a"
+       public = false     
+      }
+      "Private_SN2_DB_Cafe" = {
+       cidr_block = ""
+       availability_zone = "us-east-1b"
+       public = false     
+      }
+}
+
+igw_name = ""
+
+eip_configs = {
+  "Public_SN1_Cafe" = { name = "ryan_cafe_NAT_EIP_1a"} #This is an example of how to name yours
+  "Public_SN2_Cafe" = { name = ""}
+}
+
+public_subnet_keys = ["Public_SN1_Cafe", "Public_SN2_Cafe"]
+
+app_subnet_keys = ["Private_SN1_App_Cafe", "Private_SN2_App_Cafe"]
+
+db_subnet_keys = ["Private_SN1_DB_Cafe", "Private_SN2_DB_Cafe"]
+
+public_rt_name = ""
+
+sg_name_prefix = "ryan_cafe" #security_group name prefix, change as needed
+
+main_zone_name = "thisisanexample.com" #You must have purchased a Route53 domain. Use that here.
+
+sub_record_name = "welcome" #This example will translate to "welcome.thisisanexample.com"
+
+domain_name = "thisisanexample.com"
+
+alb_logs_bucket_name = "" #Desired name for alb_logs bucket
+
+lb_name_prefix = "ryan-cafe"
+
+target_group_port = 5000 #Change this based on your needs
+
+health_check_interval = 30
+
+asg_name_prefix = "Cafe_App"
+
+asg_desired_capacity = 2
+
+asg_min_size = 1
+
+asg_max_size = 3
+
+asg_down_scaling_adjustment = -1
+
+asg_up_scaling_adjustment = 1
+
+sns_topic_subscriber_email = ["", ""] #Can input one value or multiple as needed
+
+cw_high_eval_periods = 2
+
+cw_high_cpu_eval_duration = 60
+
+cw_high_cpu_threshold = 75
+
+cw_low_eval_periods = 2
+
+cw_low_cpu_eval_duration = 60
+
+cw_low_cpu_threshold = 30
+
+instance_type = "t2.micro"
+
+db_identifier = "cafe-mysql-db" #Change as you wish
+
+db_instance_class = "db.t3.micro" 
+
+db_allocated_storage = 20 #Change based on your needs
+
+db_name = "" #Your desired db_name
+
+db_username = ""
+
+db_password = ""
+
+secret_prefix = "" #prefix for the secrets created ex: "cafe-secret"
+
+email_addr = "" #This is the email address through which order confirmations are sent
+
+email_password = "" #Assuming anyone using this will use Google, you MUST generate an App Password and use here.
+
+app_key = "" #The Flask secret key used to sign session cookies and CSRF tokens.
+
+blocked_ips = ["xxx.xxx.xxx.xxx/32"]
