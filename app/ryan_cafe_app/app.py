@@ -41,6 +41,8 @@ ALLOWED_HOSTS = {
 
 @app.before_request
 def enforce_host_header():
+    if request.path == "/health":
+        return
     host_header = request.headers.get('Host', "")
     hostname = host_header.split(":", 1)[0]
     if hostname not in ALLOWED_HOSTS:

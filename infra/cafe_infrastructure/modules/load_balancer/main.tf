@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "cafe_target_group" {
   protocol = "HTTP"
   target_type = "instance"
   vpc_id = var.vpc_id
-
+  
   health_check {
     protocol = "HTTP"
     path = var.health_check_path
