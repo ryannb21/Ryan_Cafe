@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_wtf import CSRFProtect
 from email_validator import validate_email, EmailNotValidError
 import mysql.connector
@@ -32,6 +32,19 @@ def get_secret(secret_name, region_name="us-east-1"):
 
 
 app = Flask(__name__)
+
+#Enforcing the use of specific host-header
+ALLOWED_HOSTS = {
+    "cafe.ryanb-lab.com",
+    "www.cafe.ryanb-lab.com",
+}
+
+@app.before_request
+def enforce_host_header():
+    host_header = request.headers.get('Host', "")
+    hostname = host_header.split(":", 1)[0]
+    if hostname not in ALLOWED_HOSTS:
+        abort(400, "Invalid host header")
 
 #Loading secret key from AWS Secrets Manager
 secret_key = get_secret(os.getenv("FLASK_CAFE_SECRET_NAME", "ryan-cafev6/flask_secret"), region_name=os.getenv("AWS_REGION", "us-east-1"))
