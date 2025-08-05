@@ -46,7 +46,7 @@ resource "aws_lb_listener" "cafe_https_listener" {
   load_balancer_arn = aws_lb.ryan_cafe_alb.arn
   port = 443
   protocol = "HTTPS"
-  ssl_policy = "ELBSecurityPolicy-2016-08"
+  ssl_policy = "ELBSecurityPolicy-TLS13-1-2-RES-2021-06"
   certificate_arn = var.certificate_arn
   default_action {
     type = "forward"
