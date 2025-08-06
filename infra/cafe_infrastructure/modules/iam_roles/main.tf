@@ -1,6 +1,6 @@
 data "aws_caller_identity" "current" {}
 
-data "aws_iam_policy_document" "cafe_assume_ec2" {
+data "aws_iam_policy_document" "cafe_ec2_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "cafe_ssm_core_policy" {
 #Creating the EC2 Role for Secrets Manager and Session Manager
 resource "aws_iam_role" "cafe_combined_role" {
   name = var.aws_iam_role_name_combined
-  assume_role_policy = data.aws_iam_policy_document.cafe_assume_ec2.json
+  assume_role_policy = data.aws_iam_policy_document.cafe_ec2_assume_role.json
 }
 
 resource "aws_iam_role_policy" "cafe_read_secret_policy" {

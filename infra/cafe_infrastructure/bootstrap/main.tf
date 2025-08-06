@@ -5,7 +5,7 @@ resource "random_id" "cafe_bucket_suffix" {
 
 ##Configuring the s3 bucket for terraform state file
 resource "aws_s3_bucket" "cafe_app_tf_state" {
-  bucket = "${var.bucket_prefix}-${random_id.cafe_bucket_suffix.hex}"
+  bucket = "${var.tf_state_bucket_prefix}-${random_id.cafe_bucket_suffix.hex}"
   force_destroy = true
 #   lifecycle {
 #     prevent_destroy = true

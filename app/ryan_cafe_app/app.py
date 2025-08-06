@@ -71,26 +71,26 @@ app.secret_key = secret_key['secret_key']
 #Enabling CSRF protection
 csrf = CSRFProtect(app)
 
-#Loading email creds securely from AWS Secrets Manager
+#Loading email creds securely from AWS Secrets Manager and GMAIL SMTP Configuration
 email_secrets = get_secret(os.getenv("EMAIL_SECRET_NAME", "ryan-cafev7/emailcreds"), region_name=os.getenv("AWS_REGION", "us-east-1"))
 if email_secrets is None:
     raise ValueError("Failed to retrieve email secrets from Secrets Manager")
-#Gmail SMTP configuration
+
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USERNAME'] = email_secrets['email_addr']
-app.config['MAIL_PASSWORD'] = email_secrets['email_password']  # You MUST create and use Gmail app password, NOT regular password here
+app.config['MAIL_PASSWORD'] = email_secrets['email_password']
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 
 mail = Mail(app)
 
 
-#Loading db creds securely from AWS Secrets Manager
+#Loading db creds securely from AWS Secrets Manager and Database Configuration
 db_secrets = get_secret(os.getenv("DB_SECRET_NAME", "ryan-cafev7/db_creds"), region_name=os.getenv("AWS_REGION", "us-east-1"))
 if db_secrets is None:
     raise ValueError("Failed to retrieve database secrets from Secrets Manager")
-#DB CONFIG
+
 DB_CONFIG = {
     'host': db_secrets['host'],
     'user': db_secrets['user'],

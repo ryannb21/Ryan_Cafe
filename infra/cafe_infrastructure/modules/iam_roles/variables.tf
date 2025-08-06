@@ -16,7 +16,6 @@ variable "instance_profile_name_combined" {
   default = "CafeEC2CombinedProfile"
 }
 
-
 variable "secret_arns" {
   description = "A list of the secrets manager arns the role is allowed to read"
   type = list(string)

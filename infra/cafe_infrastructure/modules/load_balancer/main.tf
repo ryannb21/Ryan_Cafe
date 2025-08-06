@@ -17,7 +17,7 @@ resource "aws_lb" "ryan_cafe_alb" {
 }
 
 
-#Creating the Target Group
+#Creating the Cafe Target Group
 resource "aws_lb_target_group" "cafe_target_group" {
   name = "${var.lb_name_prefix}-TG"
   port = var.target_group_port
@@ -41,7 +41,7 @@ resource "aws_lb_target_group" "cafe_target_group" {
 }
 
 
-#Creating the listener for HTTPS
+#Creating the Cafe listener for HTTPS
 resource "aws_lb_listener" "cafe_https_listener" {
   load_balancer_arn = aws_lb.ryan_cafe_alb.arn
   port = 443
@@ -54,7 +54,7 @@ resource "aws_lb_listener" "cafe_https_listener" {
   }
 }
 
-#Creating the listener for HTTP
+#Creating the Cafe listener for HTTP
 resource "aws_lb_listener" "cafe_http_listener" {
   load_balancer_arn = aws_lb.ryan_cafe_alb.arn
   port = 80
