@@ -3,7 +3,7 @@ To use this code, follow the steps below:
 
 2. run <terraform init>
 
-3. run <terraform apply -var="bucket_prefix=your_desired_prefix_here" -var="dynamodb_table=desired_dynamo_db_table_name_here"> Or use the default values in the bootstrap/variables.tf file
+3. run <terraform apply -var="tf_state_bucket_prefix=your_desired_prefix_here" -var="dynamodb_table=desired_dynamo_db_table_name_here"> Or use the default values in the bootstrap/variables.tf file
 
 4. Copy the output values for "aws_s3_bucket" and "aws_dynamodb_table" and insert them into your "backend.tfvars" for "bucket" and "dynamodb_table"
 
