@@ -34,23 +34,17 @@ variable "cw_low_cpu_threshold" {
   default = 30
 }
 
-
-variable "asg_name" {
-  description = "The name of the autoscaling group associated to the alarm"
+variable "ecs_cluster_name" {
+  description = "The name of the ECS cluster associated to the alarm"
   type = string
 }
 
-variable "asg_scale_up_policy" {
-  description = "The ARN of the scale-up policy to be triggered"
+variable "ecs_service_name" {
+  description = "The name of the ECS service associated to the alarm"
   type = string
 }
 
-variable "asg_scale_down_policy" {
-  description = "The ARN of the scale-down policy to be triggered"
-  type = string
-}
-
-variable "asg_sns_topic" {
+variable "cafe_ecs_sns_topic" {
   description = "The ARN of the SNS Topic through which notification is sent"
   type = string
 }

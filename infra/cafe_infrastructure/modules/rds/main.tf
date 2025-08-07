@@ -8,7 +8,6 @@ resource "aws_db_subnet_group" "cafe_db_subnet_group" {
   }
 }
 
-
 #Configuring the Database Instance
 resource "aws_db_instance" "cafe_db" {
   identifier = var.db_identifier

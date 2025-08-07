@@ -99,42 +99,6 @@ variable "health_check_interval" {
   default     = 30
 }
 
-variable "asg_name_prefix" {
-  description = "Desire ASG name prefix"
-  type        = string
-  default     = "Cafe_App"
-}
-
-variable "asg_desired_capacity" {
-  description = "Desired number of instances in the ASG"
-  type        = number
-  default     = 2
-}
-
-variable "asg_min_size" {
-  description = "Desired minimum number of instances in the ASG"
-  type        = number
-  default     = 1
-}
-
-variable "asg_max_size" {
-  description = "Desired maximum number of instances in the ASG"
-  type        = number
-  default     = 3
-}
-
-variable "asg_up_scaling_adjustment" {
-  description = "Value to increase scaling by ASG"
-  type        = number
-  default     = 1
-}
-
-variable "asg_down_scaling_adjustment" {
-  description = "Value to decrease scaling by ASG"
-  type        = number
-  default     = -1
-}
-
 variable "sns_topic_subscriber_email" {
   description = "The desired email to subscribe to the SNS Topic"
   type        = list(string)
@@ -180,6 +144,23 @@ variable "instance_type" {
   type        = string
   description = "The instance type"
   default     = "t2.micro"
+}
+
+variable "cafe_ecr_repo_name" {
+  description = "The desired name for the cafe ecr repo"
+  type        = string
+}
+
+variable "flask_secret_name" {
+  type = string
+}
+
+variable "email_secret_name" {
+  type = string
+}
+
+variable "db_secret_name" {
+  type = string
 }
 
 variable "db_identifier" {

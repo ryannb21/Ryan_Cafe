@@ -22,6 +22,13 @@ resource "aws_security_group" "cafe_alb_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
 
   dynamic "egress" {
     for_each = [local.default_egress]
@@ -58,11 +65,10 @@ resource "aws_security_group" "cafe_public_sg" {
   }
 }
 
-
-#App Security Group
-resource "aws_security_group" "cafe_app_sg" {
-  name        = "App_SG-${local.sg_name}"
-  description = "Allow app traffic (5000) from ALB"
+#Fargate Security Group
+resource "aws_security_group" "cafe_ecs_fargate_sg" {
+  name        = "ECS_SG-${local.sg_name}"
+  description = "Allows Fargate outbound traffic"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -82,7 +88,7 @@ resource "aws_security_group" "cafe_app_sg" {
     }
   }
   tags = {
-    "Name" = "App_SG-${var.sg_name_prefix}"
+    "Name" = "ECS_SG-${var.sg_name_prefix}"
   }
 }
 
@@ -97,7 +103,10 @@ resource "aws_security_group" "cafe_db_sg" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    security_groups = [aws_security_group.cafe_app_sg.id]
+    security_groups = [
+      aws_security_group.cafe_ecs_fargate_sg.id,
+      aws_security_group.cafe_public_sg.id,
+   ]
   }
 
   dynamic "egress" {

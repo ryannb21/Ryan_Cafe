@@ -78,18 +78,6 @@ target_group_port = 5000 #Change this based on your needs
 
 health_check_interval = 30
 
-asg_name_prefix = "Cafe_App"
-
-asg_desired_capacity = 2
-
-asg_min_size = 1
-
-asg_max_size = 3
-
-asg_down_scaling_adjustment = -1
-
-asg_up_scaling_adjustment = 1
-
 sns_topic_subscriber_email = ["", ""] #Can input one value or multiple as needed
 
 cw_high_eval_periods = 2

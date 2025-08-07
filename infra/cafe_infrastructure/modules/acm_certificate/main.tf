@@ -8,6 +8,7 @@ locals {
   first_dvo = tolist(aws_acm_certificate.domain_certificate.domain_validation_options)[0]
 }
 
+#Attaching the certificate to the route53 zone
 resource "aws_route53_record" "cert_attach" {
   count   = 1
   zone_id = var.route53_zone_id
@@ -17,6 +18,7 @@ resource "aws_route53_record" "cert_attach" {
   records = [local.first_dvo.resource_record_value]
 }
 
+#Validating the certificate
 resource "aws_acm_certificate_validation" "cert_validation" {
   certificate_arn         = aws_acm_certificate.domain_certificate.arn
   validation_record_fqdns = aws_route53_record.cert_attach[*].fqdn

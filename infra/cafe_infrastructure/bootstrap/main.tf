@@ -1,7 +1,7 @@
 #Generating the random bucket suffix for uniqueness
 resource "random_id" "cafe_bucket_suffix" {
   byte_length = 4
-} #<- Add this for the lock table
+}
 
 ##Configuring the s3 bucket for terraform state file
 resource "aws_s3_bucket" "cafe_app_tf_state" {

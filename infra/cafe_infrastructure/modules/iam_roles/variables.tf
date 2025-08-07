@@ -4,19 +4,23 @@ variable "region" {
   default     = "us-east-1"
 }
 
-variable "aws_iam_role_name_combined" {
-  description = "Name for the combined EC2 roles"
+variable "db_ec2_ssm_role_name" {
+  description = "The role name for the dedicated db ec2"
   type = string
-  default = "CafeEC2CombinedRole"
+  default = "CafeDedicatedDBSSMRole"
 }
 
-variable "instance_profile_name_combined" {
-  description = "Name for the combined IAM instance profile"
+variable "db_ec2_ssm_profile_name" {
+  description = "Name of the db EC2 Instance Profile"
   type = string
-  default = "CafeEC2CombinedProfile"
+  default = "CafeDedicatedDBSSMProfile"
 }
 
 variable "secret_arns" {
   description = "A list of the secrets manager arns the role is allowed to read"
   type = list(string)
+}
+
+variable "aws_ecs_task_iam_role_name" {
+  description = "Name for the ECS Task role"
 }

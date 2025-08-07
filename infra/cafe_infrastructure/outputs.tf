@@ -81,6 +81,10 @@ output "cafe_alb_logs_bucket_arn" {
   value = module.s3_bucket.cafe_alb_logs_bucket_arn
 }
 
+output "cafe_vpc_flow_logs_bucket_arn" {
+  value = module.s3_bucket.cafe_vpc_flow_logs_bucket_arn
+}
+
 
 #From modules/load_balancer
 output "alb_arn" {
@@ -90,23 +94,6 @@ output "alb_arn" {
 output "alb_dns_name" {
   value = module.load_balancer.alb_dns_name
 }
-
-
-#From modules/autoscaling_group
-output "launch_template_id" {
-  value = module.autoscaling_group.launch_template_id
-}
-
-output "autoscaling_group_arn" {
-  value = module.autoscaling_group.autoscaling_group_arn
-}
-
-
-#From modules/iam_roles
-output "combined_role_arn" {
-  value = module.iam_roles.combined_role_arn
-}
-
 
 #From modules/sns_topic
 output "sns_topic_name" {
@@ -139,6 +126,11 @@ output "combined_alarm_names" {
 #From modules/ec2
 output "db_dedicated_ec2_instance_id" {
   value = module.ec2.db_dedicated_ec2_instance_id
+}
+
+#From modules/ecr
+output "cafe_ecr_repo_url" {
+  value = module.ecr.cafe_ecr_repo_url
 }
 
 

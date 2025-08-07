@@ -1,0 +1,90 @@
+name: Deploy Ryan Cafe
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: ryan-cafe
+  ECS_SERVICE: ryan-cafe-ecs-service
+  ECS_CLUSTER: cafe-ecs-cluster
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        cd app/ryan_cafe_app
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.5.0
+
+    - name: Terraform Init - Bootstrap
+      run: |
+        cd infra/cafe_infrastructure/bootstrap
+        terraform init
+
+    - name: Terraform Plan - Bootstrap
+      run: |
+        cd infra/cafe_infrastructure/bootstrap
+        terraform plan
+
+    - name: Terraform Apply - Bootstrap
+      if: github.ref == 'refs/heads/main'
+      run: |
+        cd infra/cafe_infrastructure/bootstrap
+        terraform apply -auto-approve
+
+    - name: Terraform Init - Main Infrastructure
+      run: |
+        cd infra/cafe_infrastructure
+        terraform init
+
+    - name: Terraform Plan - Main Infrastructure
+      run: |
+        cd infra/cafe_infrastructure
+        terraform plan
+
+    - name: Terraform Apply - Main Infrastructure
+      if: github.ref == 'refs/heads/main'
+      env:
+        TF_VAR_cafe_ecr_repo_url: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}
+      run: |
+        cd infra/cafe_infrastructure
+        terraform apply -auto-approve
+
+    - name: Force ECS Service Update
+      if: github.ref == 'refs/heads/main'
+      run: |
+        aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --force-new-deployment

@@ -59,7 +59,8 @@ module "acm_certificate" {
 }
 
 module "s3_bucket" {
-  source               = "./modules/s3_bucket"
+  source = "./modules/s3_bucket"
+  vpc_id = module.vpc.vpc_id
   alb_logs_bucket_name = var.alb_logs_bucket_name
 }
 
@@ -77,24 +78,6 @@ module "load_balancer" {
   depends_on                  = [module.rds]
 }
 
-module "autoscaling_group" {
-  source                      = "./modules/autoscaling_group"
-  db_endpoint                 = module.rds.rds_endpoint
-  ami_id                      = data.aws_ami.ec2_ami.id
-  instance_profile_name       = module.iam_roles.combined_instance_profile_name
-  asg_name_prefix             = var.asg_name_prefix
-  asg_security_group_ids      = [module.security_group.sg_ids["cafe_app_sg"]]
-  subnet_ids                  = values(local.app_subnet_ids)
-  target_group_arn            = module.load_balancer.target_group_arn
-  asg_min_size                = var.asg_min_size
-  asg_max_size                = var.asg_max_size
-  asg_desired_capacity        = var.asg_desired_capacity
-  asg_up_scaling_adjustment   = var.asg_up_scaling_adjustment
-  asg_down_scaling_adjustment = var.asg_down_scaling_adjustment
-  sns_topic_arn               = module.sns_topic.sns_topic_arn
-  depends_on                  = [module.load_balancer]
-}
-
 module "iam_roles" {
   source = "./modules/iam_roles"
   secret_arns = [
@@ -102,8 +85,9 @@ module "iam_roles" {
     module.secrets_manager.email_secret_arn,
     module.secrets_manager.app_secret_arn
   ]
-  aws_iam_role_name_combined     = "EC2CombinedRole"
-  instance_profile_name_combined = "EC2CombinedInstanceProfile"
+  db_ec2_ssm_role_name = "CafeDedicatedDBSSMRole"
+  db_ec2_ssm_profile_name = "CafeDedicatedDBSSMProfile"
+  aws_ecs_task_iam_role_name = "ECSTaskRole"
 }
 
 module "sns_topic" {
@@ -113,25 +97,43 @@ module "sns_topic" {
 
 module "cloudwatch_alarms" {
   source                    = "./modules/cloudwatch_alarms"
-  asg_name                  = module.autoscaling_group.autoscaling_group_name
-  asg_scale_up_policy       = module.autoscaling_group.scale_up_policy_arn
-  asg_scale_down_policy     = module.autoscaling_group.scale_down_policy_arn
-  asg_sns_topic             = module.sns_topic.sns_topic_arn
+  cafe_ecs_sns_topic             = module.sns_topic.sns_topic_arn
   cw_high_cpu_eval_duration = var.cw_high_cpu_eval_duration
   cw_high_eval_periods      = var.cw_high_eval_periods
   cw_high_cpu_threshold     = var.cw_high_cpu_threshold
   cw_low_cpu_eval_duration  = var.cw_low_cpu_eval_duration
   cw_low_eval_periods       = var.cw_low_eval_periods
   cw_low_cpu_threshold      = var.cw_low_cpu_threshold
+  ecs_cluster_name =  module.ecs.ecs_cluster_name
+  ecs_service_name = module.ecs.ecs_service_name
 }
 
 module "ec2" {
   source               = "./modules/ec2"
   ami                  = data.aws_ami.ec2_ami.id
   instance_type        = var.instance_type
-  iam_instance_profile = module.iam_roles.combined_instance_profile_name
+  iam_instance_profile = module.iam_roles.db_ec2_ssm_profile_name
   subnet_id            = values(local.app_subnet_ids)[0]
-  security_group_ids   = [module.security_group.sg_ids["cafe_app_sg"]]
+  security_group_ids   = [module.security_group.sg_ids["cafe_public_sg"]]
+}
+
+module "ecr" {
+  source = "./modules/ecr"
+  cafe_ecr_repo_name = var.cafe_ecr_repo_name
+}
+
+module "ecs" {
+  source = "./modules/ecs"
+  aws_region = var.aws_region
+  ecs_task_role_arn = module.iam_roles.ecs_task_role_arn
+  cafe_ecr_repo_url = module.ecr.cafe_ecr_repo_url
+  subnet_ids = values(local.app_subnet_ids)[0]
+  security_group_ids = module.security_group.sg_ids["cafe_ecs_fargate_sg"]
+  target_group_arn = module.load_balancer.target_group_arn
+  flask_secret_name = var.flask_secret_name
+  email_secret_name = var.email_secret_name
+  db_secret_name = var.db_secret_name
+  depends_on = [module.ecr, module.load_balancer, module.iam_roles]
 }
 
 module "rds" {

@@ -24,6 +24,9 @@
 infra/cafe_infrastructure/terraform.tfvars
 infra/cafe_infrastructure/backend.tfvars
 
+###Scrapped
+infra/cafe_infrastructure/modules/autoscaling_group/*
+
 ###Log files, IDE, and OS artifacts###
 *.log
 .vscode/

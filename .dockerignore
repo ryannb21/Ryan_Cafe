@@ -1,0 +1,14 @@
+infra/
+.terraform/
+*.tfstate
+*.terraform.lock.hcl
+
+#Ignore Python caches and envs
+*.pyc
+venv/
+.venv/
+
+#Ignoring Git Metadata
+*git/
+.gitignore
+.gitattributes

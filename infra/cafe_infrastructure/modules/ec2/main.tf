@@ -12,6 +12,15 @@ resource "aws_instance" "cafe_db_dedicated_instance" {
     volume_size = 10
   }
 
+  instance_market_options {
+    market_type = "spot"
+    spot_options {
+      spot_instance_type = "persistent"
+      instance_interruption_behavior = "terminate"
+      max_price = "0.05"
+    }
+  }
+
   tags = {
     "Name" = "db_dedicated_ec2"
     "Project" = "Cafe_App"
