@@ -16,7 +16,7 @@ resource "aws_instance" "cafe_db_dedicated_instance" {
     market_type = "spot"
     spot_options {
       spot_instance_type = "persistent"
-      instance_interruption_behavior = "terminate"
+      instance_interruption_behavior = "stop"
       max_price = "0.05"
     }
   }
