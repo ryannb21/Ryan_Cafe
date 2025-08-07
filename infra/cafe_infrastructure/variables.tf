@@ -77,11 +77,6 @@ variable "domain_name" {
   type        = string
 }
 
-variable "alb_logs_bucket_name" {
-  description = "Desired name of the S3 bucket for alb logs"
-  type        = string
-}
-
 variable "lb_name_prefix" {
   description = "Prefix for all load balancer names"
   type        = string

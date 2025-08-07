@@ -61,7 +61,6 @@ module "acm_certificate" {
 module "s3_bucket" {
   source = "./modules/s3_bucket"
   vpc_id = module.vpc.vpc_id
-  alb_logs_bucket_name = var.alb_logs_bucket_name
 }
 
 module "load_balancer" {
