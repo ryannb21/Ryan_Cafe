@@ -61,7 +61,7 @@ jobs:
     - name: Terraform Init - Main Infrastructure
       run: |
         cd infra/cafe_infrastructure
-        terraform init -backend-config="bucket=${{ steps.bootstrap-outputs.outputs.s3_bucket }}" -backend-config="dynamodb_table=${{ steps.bootstrap-outputs.outputs.dynamodb_table }}"
+        terraform init -backend-config="bucket=${{ steps.bootstrap-outputs.outputs.s3_bucket }}" -backend-config="key=terraform.tfstate" -backend-config="region=us-east-1" -backend-config="dynamodb_table=${{ steps.bootstrap-outputs.outputs.dynamodb_table }}" -backend-config="encrypt=true"
 
     - name: Terraform Plan - Main Infrastructure
       run: |
