@@ -1,0 +1,64 @@
+name: Destroy Infrastructure
+
+on:
+  workflow_dispatch:  # Manual trigger only
+    inputs:
+      confirm_destroy:
+        description: 'Type "DESTROY" to confirm'
+        required: true
+        default: ''
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  destroy:
+    name: Destroy Infrastructure
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Validate Confirmation
+      if: github.event.inputs.confirm_destroy != 'DESTROY'
+      run: |
+        echo "❌ Confirmation failed. You must type 'DESTROY' to proceed."
+        exit 1
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.5.0
+
+    - name: Get Bootstrap Outputs
+      id: bootstrap-outputs
+      run: |
+        cd infra/cafe_infrastructure/bootstrap
+        terraform init
+        echo "s3_bucket=$(terraform output -raw aws_s3_tfstate_bucket_name)" >> $GITHUB_OUTPUT
+        echo "dynamodb_table=$(terraform output -raw aws_dynamodb_table)" >> $GITHUB_OUTPUT
+
+    - name: Terraform Init - Main Infrastructure
+      run: |
+        cd infra/cafe_infrastructure
+        terraform init -backend-config="bucket=${{ steps.bootstrap-outputs.outputs.s3_bucket }}" -backend-config="key=terraform.tfstate" -backend-config="region=us-east-1" -backend-config="dynamodb_table=${{ steps.bootstrap-outputs.outputs.dynamodb_table }}" -backend-config="encrypt=true"
+
+    - name: Terraform Destroy - Main Infrastructure
+      env:
+        TF_VAR_app_key: ${{ secrets.APP_KEY }}
+      run: |
+        cd infra/cafe_infrastructure
+        terraform destroy -auto-approve
+
+    - name: Terraform Destroy - Bootstrap
+      run: |
+        cd infra/cafe_infrastructure/bootstrap
+        terraform destroy -auto-approve
