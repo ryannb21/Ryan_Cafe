@@ -3,5 +3,5 @@ output "aws_s3_tfstate_bucket_name" {
 }
 
 output "aws_dynamodb_table" {
-  value = var.dynamodb_table
+  value = aws_dynamodb_table.tf_lock.name
 }
