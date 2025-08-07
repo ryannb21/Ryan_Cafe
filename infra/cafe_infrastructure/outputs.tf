@@ -23,6 +23,7 @@ output "eip_allocation_ids" {
 
 output "public_ips" {
   value = module.eip.public_ips
+  sensitive = true
 }
 
 
@@ -33,6 +34,7 @@ output "nat_gateway_ids" {
 
 output "nat_gateway_ips" {
   value = module.nat_gateway.nat_gateway_ips
+  sensitive = true
 }
 
 
