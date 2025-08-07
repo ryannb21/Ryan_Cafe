@@ -43,10 +43,11 @@ jobs:
       run: |
         cd infra/cafe_infrastructure/bootstrap
         terraform init
-        # Check if outputs exist before trying to read them
-        if terraform output aws_s3_tfstate_bucket_name >/dev/null 2>&1; then
+        # Check if state file has resources
+        if terraform show -json | grep -q '"values"'; then
           echo "s3_bucket=$(terraform output -raw aws_s3_tfstate_bucket_name)" >> $GITHUB_OUTPUT
           echo "dynamodb_table=$(terraform output -raw aws_dynamodb_table)" >> $GITHUB_OUTPUT
+          echo "Bootstrap resources found, will proceed with destroy"
         else
           echo "No bootstrap resources found to destroy"
           echo "s3_bucket=" >> $GITHUB_OUTPUT
