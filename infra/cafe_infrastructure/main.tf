@@ -169,3 +169,7 @@ module "waf" {
   ]
   depends_on = [module.load_balancer]
 }
+
+resource "aws_s3_bucket" "test_bucket" {
+  bucket = "ry-testsssss-buckkk-127392"
+}
