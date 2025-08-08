@@ -93,13 +93,13 @@ jobs:
         aws s3 rm s3://${{ steps.bootstrap-outputs.outputs.s3_bucket }} --recursive || true
         
         # Remove all object versions if versioning is enabled
-        aws s3api list-object-versions --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --query 'Versions[].{Key:Key,VersionId:VersionId}' --output text | while read key version; do
-          aws s3api delete-object --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --key "$key" --version-id "$version" || true
+        aws s3api list-object-versions --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --output json | jq -r '.Versions[]? | "\(.Key) \(.VersionId)"' | while read -r key version; do
+          [ -n "$key" ] && aws s3api delete-object --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --key "$key" --version-id "$version" || true
         done
         
         # Remove all delete markers
-        aws s3api list-object-versions --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --query 'DeleteMarkers[].{Key:Key,VersionId:VersionId}' --output text | while read key version; do
-          aws s3api delete-object --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --key "$key" --version-id "$version" || true
+        aws s3api list-object-versions --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --output json | jq -r '.DeleteMarkers[]? | "\(.Key) \(.VersionId)"' | while read -r key version; do
+          [ -n "$key" ] && aws s3api delete-object --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --key "$key" --version-id "$version" || true
         done
         
         # Now delete the bucket
