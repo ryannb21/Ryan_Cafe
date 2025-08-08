@@ -102,7 +102,7 @@ db_name = "cafe_orders"
 
 # db_password = "" #G.A Sec
 
-secret_prefix = "ryan-cafev30"
+secret_prefix = "ryan-cafev31"
 
 # email_addr = "" #G.A Sec
 
