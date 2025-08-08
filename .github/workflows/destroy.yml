@@ -86,9 +86,23 @@ jobs:
       run: |
         echo "Deleting bootstrap resources directly..."
         
-        # Empty and delete S3 bucket
-        echo "Emptying S3 bucket: ${{ steps.bootstrap-outputs.outputs.s3_bucket }}"
+        # Empty and delete S3 bucket (comprehensive cleanup)
+        echo "Cleaning up S3 bucket: ${{ steps.bootstrap-outputs.outputs.s3_bucket }}"
+        
+        # Remove all objects and versions
         aws s3 rm s3://${{ steps.bootstrap-outputs.outputs.s3_bucket }} --recursive || true
+        
+        # Remove all object versions if versioning is enabled
+        aws s3api list-object-versions --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --query 'Versions[].{Key:Key,VersionId:VersionId}' --output text | while read key version; do
+          aws s3api delete-object --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --key "$key" --version-id "$version" || true
+        done
+        
+        # Remove all delete markers
+        aws s3api list-object-versions --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --query 'DeleteMarkers[].{Key:Key,VersionId:VersionId}' --output text | while read key version; do
+          aws s3api delete-object --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} --key "$key" --version-id "$version" || true
+        done
+        
+        # Now delete the bucket
         aws s3api delete-bucket --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} || true
         
         # Delete DynamoDB table
