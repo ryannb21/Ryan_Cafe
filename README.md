@@ -3,12 +3,12 @@
 # DISCLAIMER: THIS IS A PERSONAL PROJECT, NO "ORDERS" PLACED VIA THE WEBSITE WILL BE DELIVERED! THANKS FOR UNDERSTANDING.
 
 This is a production-ready cafe ordering system built with modern DevOps practices accounted for; featuring automated CI/CD, containerization, and enterprise-grade AWS infrastructure.
-===
+
 
 ## Live Demo
 Feel free to place an order via the website:
 **Website:** [https://cafe.ryanb-lab.com](https://cafe.ryanb-lab.com)
-====
+
 
 ## Architecture Overview
 
@@ -43,7 +43,7 @@ Feel free to place an order via the website:
 - **Health Checks:** Application and infrastructure level monitoring
 - **Database:** RDS with automated backups and point-in-time recovery
 - **CDN Ready:** Architecture supports CloudFront integration (when implemented)
-===
+
 
 ## Technology Stack
 
@@ -102,7 +102,7 @@ If you choose to re-use this infrastructure, simply edit `infra/cafe_infrastruct
 - Domain names and SSL certificates
 - Instance types and scaling parameters
 - Monitoring thresholds
-===
+
 
 ## Project Structure
 ```
@@ -140,7 +140,7 @@ If you choose to re-use this infrastructure, simply edit `infra/cafe_infrastruct
 - Automated deployment
 - Zero-downtime deployments
 - Manual destroy workflow for cleanup
-===
+
 
 ## Security Features
 - **Full HTTPS:** SSL/TLS encryption for all traffic, and HTTP -> HTTPS redirection.
@@ -149,7 +149,7 @@ If you choose to re-use this infrastructure, simply edit `infra/cafe_infrastruct
 - **Security Headers:** Protection against XSS, clickjacking, and more.
 - **Network Isolation:** Private subnets for application and database.
 - **IAM Roles:** Least privilege access control.
-===
+
 
 ## Monitoring & Observability
 
@@ -159,7 +159,7 @@ If you choose to re-use this infrastructure, simply edit `infra/cafe_infrastruct
 - **Alerting:** Email notifications via SNS Topic for critical events
 - **Health Checks:** Multi-level health monitoring
 - **Logs:** ALB access logs and VPC flow logs stored to S3
-===
+
 
 ## Key Features
 
@@ -168,7 +168,6 @@ If you choose to re-use this infrastructure, simply edit `infra/cafe_infrastruct
 - **Email Notifications:** Includes automated order confirmations
 - **High Availability:** 99.9% uptime architecture
 - **Auto Scaling:** Traffic spikes are automatically handled
-===
 
 ## Performance
 
@@ -176,7 +175,6 @@ If you choose to re-use this infrastructure, simply edit `infra/cafe_infrastruct
 - **Resource Allocation:** 0.5 vCPU, 1GB RAM per container were chosen to meet and handle expected traffic 
 - **Load Balancing:** Distributed traffic across multiple containers
 - **Performance:** Optimized resource allocation and auto-scaling
-===
 
 ## Author
 
