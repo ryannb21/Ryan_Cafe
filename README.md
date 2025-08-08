@@ -56,7 +56,7 @@ Feel free to place an order via the website:
 | **CI/CD** | GitHub Actions |
 | **Security** | AWS WAF, ACM, Secrets Manager |
 | **Monitoring** | CloudWatch, SNS, ALB & VPC Logs|
-===
+
 
 ## Deployment
 
@@ -76,7 +76,6 @@ cd ..
 terraform init -backend-config="bucket=OUTPUT_BUCKET" -backend-config="dynamodb_table=OUTPUT_TABLE"
 terraform apply
 ```
-===
 
 ## Configuration
 
@@ -96,7 +95,6 @@ TF_VAR_flask_secret_name
 TF_VAR_email_secret_name
 TF_VAR_db_secret_name
 ```
-===
 
 ### **Infrastructure Customization**
 If you choose to re-use this infrastructure, simply edit `infra/cafe_infrastructure/terraform.tfvars` to customize the following variables:
@@ -128,7 +126,6 @@ If you choose to re-use this infrastructure, simply edit `infra/cafe_infrastruct
     ├── deploy.yml             # Automated deployment in GitHub Actions
     └── destroy.yml            # Infrastructure teardown via GitHub Actions
 ```
-===
 
 ## CI/CD Pipeline
 
@@ -183,7 +180,7 @@ If you choose to re-use this infrastructure, simply edit `infra/cafe_infrastruct
 
 ## Author
 
-**Ryan** - [LinkedIn](www.linkedin.com/in/ryan-bongwa-535073163) | [GitHub](https://github.com/ryannb21)
+**Ryan** - [LinkedIn](https://linkedin.com/in/ryan-bongwa-535073163) | [GitHub](https://github.com/ryannb21)
 
 ---
 
