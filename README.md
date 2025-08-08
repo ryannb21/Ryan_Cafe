@@ -58,6 +58,45 @@ Feel free to place an order via the website:
 | **Monitoring** | CloudWatch, SNS, ALB & VPC Logs|
 
 
+## Prerequisites
+
+If you plan on replicating this project, ensure you have:
+
+### **Required Tools**
+- **AWS CLI** configured with appropriate credentials
+- **Terraform** (v1.5.0 or later)
+- **Python** (v3.8 or later) for generating Flask secret keys and local work/testing
+- **Docker** (for local testing)
+- **Git** for version control
+
+### **AWS Requirements**
+- **AWS Account** set up with a STRONG PASSWORD (I suggest 12 characters(upper,lower,numbers,special characters) minimum) and Multi-Factor Authentication (MFA) configured with an authenticator app like Google Authenticator for BOTH the root and IAM user account
+- **Route53 Hosted Zone** for your domain
+- **Domain name** registered and managed by Route53
+- **IAM User** with the following policies: 
+  - `AmazonEC2ContainerRegistryFullAccess`
+  - `AmazonECS_FullAccess`
+  - `IAMFullAccess`
+  - `AmazonS3FullAccess`
+  - `AmazonDynamoDBFullAccess`
+  - `AmazonVPCFullAccess`
+  - `AmazonRDSFullAccess`
+  - `AmazonRoute53FullAccess`
+  - `AWSCertificateManagerFullAccess`
+  You must use the IAM user account once you set it up, avoid working as root. If your IAM user has full admin access role, **PLEASE use a strong password AND ENABLE MFA.**
+
+### **Application Secrets**
+Generate the following secrets before deployment:
+- **Flask Secret Key:** Generate using `python -c "import os; print(os.urandom(24).hex())"`
+- **Database Password:** Strong password (minimum 8 characters)
+- **Email App Password:** Gmail app-specific password for SMTP generated from your Gmail account.
+- **Secret Names:** Choose unique names for AWS Secrets Manager
+
+### **Configuration**
+- Update `terraform.tfvars` with your specific values
+- Ensure your domain is properly configured in Route53
+- Configure GitHub repository secrets (see Configuration section)
+
 ## Deployment
 
 ### **Automated Deployment (Recommended)**

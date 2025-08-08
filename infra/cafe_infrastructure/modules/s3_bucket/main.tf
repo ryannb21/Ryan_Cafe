@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "cafe_alb_logs_bucket" {
   force_destroy = true
 #   lifecycle {
 #     prevent_destroy = true
-#   }<- Commented out to facilitate destruction, BUT is necessary in real environments
+#   }<- This is commented out to facilitate destruction, BUT is necessary in real environments
 tags = {
     Name = "cafe_alb_logs_bucket"
   } 
@@ -83,7 +83,7 @@ resource "aws_s3_bucket" "cafe_vpc_flow_logs_bucket" {
   force_destroy = true
   # lifecycle {
   #   prevent_destroy = true
-  # }<- Commented out to facilitate destruction, BUT is necessary in real environments
+  # }<- This is commented out to facilitate destruction, BUT is necessary in real environments
   tags = {
     Name = "cafe_vpc_flow_logs_bucket"
   }

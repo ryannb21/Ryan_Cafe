@@ -1,4 +1,3 @@
-#Configuring CloudWatch to Monitor Instance Metrics to Trigger ASG
 #Configuring the High_CPU_Alarm
 resource "aws_cloudwatch_metric_alarm" "cafe_ecs_cloudwatch_cpu_alarm_high" {
   alarm_name = "Cafe-ECS-High-CPU-Alarm"

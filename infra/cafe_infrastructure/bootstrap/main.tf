@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "cafe_app_tf_state" {
   force_destroy = true
 #   lifecycle {
 #     prevent_destroy = true
-#   } <- Commented out to facilitate destruction, BUT is necessary in real environments
+#   } <- This is commented out to facilitate destruction, BUT is necessary in real environments
   tags = {
     "Name" = "Terraform State Bucket"
   }

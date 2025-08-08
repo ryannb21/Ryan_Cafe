@@ -22,10 +22,10 @@ resource "aws_db_instance" "cafe_db" {
   db_subnet_group_name = aws_db_subnet_group.cafe_db_subnet_group.name
   vpc_security_group_ids = var.db_security_group_id
   skip_final_snapshot = true
-  # deletion_protection = true <- Commented out to facilitate destruction, BUT is necessary in real environments
-  # final_snapshot_identifier = "${var.db_identifier}-final-snapshot"
-  # backup_retention_period = 7
-  # backup_window = "03:00-04:00"
+  # deletion_protection = true <- Commented out to facilitate destruction, BUT is imperative to have this "on" in real environments
+  final_snapshot_identifier = "${var.db_identifier}-final-snapshot"
+  backup_retention_period = 7
+  backup_window = "03:00-04:00"
   publicly_accessible =  false
   multi_az =  true
   storage_encrypted = true

@@ -41,7 +41,7 @@ variable "alb_access_logs_bucket_name" {
 variable "enable_deletion_protection" {
   description = "This variable controls whether delete protection is set or not for the ALB"
   type = bool
-  default = false #It is good practice to turn this on in real environments. Set to false here for teardown simplicity
+  default = false #It is imperative to turn this on in real environments. Set to false here for teardown simplicity
 }
 
 variable "target_group_port" {

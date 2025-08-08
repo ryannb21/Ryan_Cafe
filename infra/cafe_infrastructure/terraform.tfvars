@@ -102,7 +102,7 @@ db_name = "cafe_orders"
 
 # db_password = "" #G.A Sec
 
-secret_prefix = "ryan-cafev31"
+secret_prefix = "ryan-cafev1"
 
 # email_addr = "" #G.A Sec
 
@@ -115,4 +115,4 @@ blocked_ips = ["45.131.108.170/32"]
 #All fields with "#G.A Sec represent values that are passed as secrets in GitHub Actions using TF_VAR:
 #Example; Secret Name in GitHub Actions: TF_VAR_db_password, Secret Value: xxxxxxxx
 #This permits this .tfvars file to be shareable, as only cafe configs are left within it, and sesnitive info
-#Is passed as a secret.
+#is passed as a secret.

@@ -1,4 +1,4 @@
-#This section assumes you procured a domain name beforehand
+#This section assumes YOU HAVE ALREADY PROCURED a domain name beforehand
 data "aws_route53_zone" "ryan_cafe_main_zone" {
   name = var.main_zone_name
 }
