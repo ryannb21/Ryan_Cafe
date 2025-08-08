@@ -42,7 +42,7 @@ jobs:
       id: bootstrap-outputs
       run: |
         # Find S3 bucket with cafe-tf-state prefix
-        BUCKET=$(aws s3api list-buckets --query 'Buckets[?starts_with(Name, `cafe-tf-state`)].Name' --output text)
+        BUCKET=$(aws s3 ls | grep 'cafe-tf-state' | awk '{print $3}' | head -1)
         
         # Find DynamoDB table with cafe-lock prefix  
         TABLE=$(aws dynamodb list-tables --query 'TableNames[?starts_with(@, `cafe-lock`)]' --output text)
