@@ -13,8 +13,8 @@ resource "aws_ecs_task_definition" "cafe_ecs_task_definition" {
   family = "ryan-cafe"
   network_mode = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu = 256
-  memory = 512
+  cpu = 512
+  memory = 1024
   execution_role_arn = var.ecs_task_role_arn
   task_role_arn = var.ecs_task_role_arn
 
@@ -73,7 +73,7 @@ resource "aws_appautoscaling_target" "cafe_fargate_scaling_target" {
   scalable_dimension = "ecs:service:DesiredCount"
 
   min_capacity = 1
-  max_capacity = 5
+  max_capacity = 10
 }
 
 #Attaching a target tracking policy to the scalable target
