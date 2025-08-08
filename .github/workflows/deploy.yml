@@ -1,8 +1,8 @@
 name: Deploy Ryan Cafe
 
 on:
-  # push:
-  #   branches: [ main ]
+  push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -44,8 +44,20 @@ jobs:
         cd infra/cafe_infrastructure/bootstrap
         terraform plan
 
+    - name: Check if Bootstrap Exists
+      id: bootstrap-check
+      run: |
+        BUCKET=$(aws s3 ls | grep 'cafe-tf-state' | awk '{print $3}' | head -1)
+        if [ -n "$BUCKET" ]; then
+          echo "bootstrap_exists=true" >> $GITHUB_OUTPUT
+          echo "Bootstrap already exists, skipping creation"
+        else
+          echo "bootstrap_exists=false" >> $GITHUB_OUTPUT
+          echo "No bootstrap found, will create"
+        fi
+
     - name: Terraform Apply - Bootstrap
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main' && steps.bootstrap-check.outputs.bootstrap_exists == 'false'
       run: |
         cd infra/cafe_infrastructure/bootstrap
         terraform apply -auto-approve
@@ -54,9 +66,18 @@ jobs:
       if: github.ref == 'refs/heads/main'
       id: bootstrap-outputs
       run: |
-        cd infra/cafe_infrastructure/bootstrap
-        echo "s3_bucket=$(terraform output -raw aws_s3_tfstate_bucket_name)" >> $GITHUB_OUTPUT
-        echo "dynamodb_table=$(terraform output -raw aws_dynamodb_table)" >> $GITHUB_OUTPUT
+        if [ "${{ steps.bootstrap-check.outputs.bootstrap_exists }}" == "true" ]; then
+          # Get from AWS directly if bootstrap already exists
+          BUCKET=$(aws s3 ls | grep 'cafe-tf-state' | awk '{print $3}' | head -1)
+          TABLE=$(aws dynamodb list-tables --query 'TableNames[?starts_with(@, `cafe-lock`)]' --output text)
+          echo "s3_bucket=$BUCKET" >> $GITHUB_OUTPUT
+          echo "dynamodb_table=$TABLE" >> $GITHUB_OUTPUT
+        else
+          # Get from terraform output if just created
+          cd infra/cafe_infrastructure/bootstrap
+          echo "s3_bucket=$(terraform output -raw aws_s3_tfstate_bucket_name)" >> $GITHUB_OUTPUT
+          echo "dynamodb_table=$(terraform output -raw aws_dynamodb_table)" >> $GITHUB_OUTPUT
+        fi
 
     - name: Terraform Init - Main Infrastructure
       run: |
