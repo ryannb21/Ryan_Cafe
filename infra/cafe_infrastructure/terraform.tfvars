@@ -66,7 +66,7 @@ target_group_port = 5000
 
 health_check_interval = 45
 
-# sns_topic_subscriber_email = ["awstestusersso@gmail.com"] #R
+# sns_topic_subscriber_email = #G.A Sec
 
 # cw_high_eval_periods = 
 
@@ -84,11 +84,11 @@ instance_type = "t2.micro"
 
 cafe_ecr_repo_name = "ryan-cafe"
 
-# flask_secret_name = ""
+# flask_secret_name = "" #G.A Sec
 
-# email_secret_name = ""
+# email_secret_name = "" #G.A Sec
 
-# db_secret_name = "" <- Inject these (db/email/flask secret_name) if you plan on reusing this code, as TF_VAR variables in GitHub Actions
+# db_secret_name = "" #G.A Sec
 
 db_identifier = "cafe-mysql-db"
 
@@ -98,16 +98,21 @@ db_allocated_storage = 20
 
 db_name = "cafe_orders"
 
-# db_username = "" #Remove
+# db_username = "" #G.A Sec
 
-# db_password = "" #Remove
+# db_password = "" #G.A Sec
 
 secret_prefix = "ryan-cafev30"
 
-# email_addr = "" #Remove
+# email_addr = "" #G.A Sec
 
-# email_password = "" #remove
+# email_password = "" #G.A Sec
 
-# app_key = "" #R
+# app_key = "" #G.A Sec
 
 blocked_ips = ["45.131.108.170/32"]
+
+#All fields with "#G.A Sec represent values that are passed as secrets in GitHub Actions using TF_VAR:
+#Example; Secret Name in GitHub Actions: TF_VAR_db_password, Secret Value: xxxxxxxx
+#This permits this .tfvars file to be shareable, as only cafe configs are left within it, and sesnitive info
+#Is passed as a secret.

@@ -38,16 +38,21 @@ jobs:
       with:
         terraform_version: 1.5.0
 
-    - name: Get Bootstrap Outputs
+    - name: Find Bootstrap Resources
       id: bootstrap-outputs
       run: |
-        cd infra/cafe_infrastructure/bootstrap
-        terraform init
-        # Check if state file has resources
-        if terraform show -json | grep -q '"values"'; then
-          echo "s3_bucket=$(terraform output -raw aws_s3_tfstate_bucket_name)" >> $GITHUB_OUTPUT
-          echo "dynamodb_table=$(terraform output -raw aws_dynamodb_table)" >> $GITHUB_OUTPUT
-          echo "Bootstrap resources found, will proceed with destroy"
+        # Find S3 bucket with cafe-tf-state prefix
+        BUCKET=$(aws s3api list-buckets --query 'Buckets[?starts_with(Name, `cafe-tf-state`)].Name' --output text)
+        
+        # Find DynamoDB table with cafe-lock prefix  
+        TABLE=$(aws dynamodb list-tables --query 'TableNames[?starts_with(@, `cafe-lock`)]' --output text)
+        
+        if [ -n "$BUCKET" ] && [ -n "$TABLE" ]; then
+          echo "Found bootstrap resources:"
+          echo "S3 Bucket: $BUCKET"
+          echo "DynamoDB Table: $TABLE"
+          echo "s3_bucket=$BUCKET" >> $GITHUB_OUTPUT
+          echo "dynamodb_table=$TABLE" >> $GITHUB_OUTPUT
         else
           echo "No bootstrap resources found to destroy"
           echo "s3_bucket=" >> $GITHUB_OUTPUT
@@ -80,4 +85,5 @@ jobs:
       if: steps.bootstrap-outputs.outputs.s3_bucket != ''
       run: |
         cd infra/cafe_infrastructure/bootstrap
+        terraform init
         terraform destroy -auto-approve
