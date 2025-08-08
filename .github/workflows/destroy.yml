@@ -81,9 +81,18 @@ jobs:
         cd infra/cafe_infrastructure
         terraform destroy -auto-approve
 
-    - name: Terraform Destroy - Bootstrap
+    - name: Delete Bootstrap Resources
       if: steps.bootstrap-outputs.outputs.s3_bucket != ''
       run: |
-        cd infra/cafe_infrastructure/bootstrap
-        terraform init
-        terraform destroy -auto-approve
+        echo "Deleting bootstrap resources directly..."
+        
+        # Empty and delete S3 bucket
+        echo "Emptying S3 bucket: ${{ steps.bootstrap-outputs.outputs.s3_bucket }}"
+        aws s3 rm s3://${{ steps.bootstrap-outputs.outputs.s3_bucket }} --recursive || true
+        aws s3api delete-bucket --bucket ${{ steps.bootstrap-outputs.outputs.s3_bucket }} || true
+        
+        # Delete DynamoDB table
+        echo "Deleting DynamoDB table: ${{ steps.bootstrap-outputs.outputs.dynamodb_table }}"
+        aws dynamodb delete-table --table-name ${{ steps.bootstrap-outputs.outputs.dynamodb_table }} || true
+        
+        echo "Bootstrap resources deleted successfully!"
