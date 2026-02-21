@@ -10,5 +10,11 @@ variable "vpc_cidr_block" {
 variable "vpc_name" {
   description = "The desired name of your VPC"
   type = string
-  default = "Ryan_Cafe_VPC"
+  default = "Ryan_Cafe"
+}
+
+variable "common_tags" {
+  description = "Common tags for each resource"
+  type = map(string)
+  default = {}
 }

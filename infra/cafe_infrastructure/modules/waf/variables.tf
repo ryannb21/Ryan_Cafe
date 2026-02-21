@@ -1,7 +1,6 @@
 variable "cafe_waf_prefix" {
   type        = string
   description = "The name prefix associated with all WAF resources"
-  default     = "cafe_waf"
 }
 
 variable "alb_arn" {
@@ -12,7 +11,6 @@ variable "alb_arn" {
 variable "waf_scope" {
   type        = string
   description = "The scope for the WAF"
-  default     = "REGIONAL"
 }
 
 variable "blocked_ips" {

@@ -1,14 +1,27 @@
 infra/
 .terraform/
 *.tfstate
+*.tfstate*
 *.terraform.lock.hcl
 
 #Ignore Python caches and envs
-*.pyc
 venv/
 .venv/
+*.pyc
+__pycache__/
+*.py[cod]
+*.log
+.pytest_cache/
+.mypy_cache/
 
-#Ignoring Git Metadata
+#Local env
+.env
+.env.*
+
+#Ignoring Git and Editor's Metadata
 *git/
 .gitignore
 .gitattributes
+.vscode/
+.idea/
+.DS_Store

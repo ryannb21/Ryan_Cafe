@@ -18,23 +18,6 @@ resource "aws_secretsmanager_secret_version" "db_creds_version" {
 }
 
 
-#EMAIL CREDENTIALS
-resource "aws_secretsmanager_secret" "cafe_email_creds" {
-  name = "${var.secret_prefix}/emailcreds"
-  description = "Email credentials for ${var.email_addr}"
-  recovery_window_in_days = 7
-}
-
-resource "aws_secretsmanager_secret_version" "email_creds_version" {
-  secret_id = aws_secretsmanager_secret.cafe_email_creds.id
-
-  secret_string = jsonencode({
-    email_addr = var.email_addr
-    email_password = var.email_password
-  })
-}
-
-
 #APP CREDENTIALS
 resource "aws_secretsmanager_secret" "cafe_app_creds" {
   name = "${var.secret_prefix}/flask_secret"

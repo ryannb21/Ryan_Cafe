@@ -1,28 +1,28 @@
 #Configuring the Application Load Balancer
 resource "aws_lb" "ryan_cafe_alb" {
-  name = "${var.lb_name_prefix}-alb"
+  name = "${var.vpc_name}-alb"
   internal = false 
   load_balancer_type = "application"
   security_groups = [var.alb_security_group_id]
   subnets = var.public_subnet_ids
   enable_deletion_protection = var.enable_deletion_protection 
   drop_invalid_header_fields = true
-  access_logs {
-    bucket = var.alb_access_logs_bucket_name
-    enabled = true
-  }
-  tags = {
-    "Name" = "${var.lb_name_prefix}-alb"
-  }
+  # access_logs {
+  #   bucket = var.alb_access_logs_bucket_name
+  #   enabled = true
+  # }
+  tags = merge(var.common_tags, {
+    Name = "${var.vpc_name}-alb"
+  })
 }
 
 
 #Creating the Cafe Target Group
 resource "aws_lb_target_group" "cafe_target_group" {
-  name = "${var.lb_name_prefix}-TG"
+  name = "${var.vpc_name}-TG"
   port = var.target_group_port
   protocol = "HTTP"
-  target_type = "ip"
+  target_type = var.target_type
   vpc_id = var.vpc_id
   
   health_check {
@@ -35,9 +35,9 @@ resource "aws_lb_target_group" "cafe_target_group" {
     matcher = "200-299"
   }
 
-  tags = {
-    "Name" = "${var.lb_name_prefix}-TG"
-  }
+  tags = merge(var.common_tags, {
+    "Name" = "${var.vpc_name}-TG"
+  })
 }
 
 

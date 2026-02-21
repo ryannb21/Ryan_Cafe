@@ -1,9 +1,20 @@
-variable "eip_configs" {
-  description = <<EOF
-  Configuration for the Elastic IP addresses to be used by the NAT Gateways
-  A mapping of logical EIP identifiers to configuration objects:
-  EOF
+variable "subnet_configs" {
+  description = "Subnet configurations to determine AZs for EIPs"
   type = map(object({
-    name = string
+    cidr_block        = string
+    availability_zone = string
+    public            = bool
+    tier              = string
   }))
+}
+
+variable "vpc_name" {
+  description = "VPC name for tagging"
+  type = string
+}
+
+variable "common_tags" {
+  description = "Common tags for resources"
+  type = map(string)
+  default = {}
 }

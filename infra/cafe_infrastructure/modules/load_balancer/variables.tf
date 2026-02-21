@@ -2,10 +2,9 @@ variable "vpc_id" {
   type = string
 }
 
-variable "lb_name_prefix" {
-  description = "Prefix for all load balancer names"
+variable "vpc_name" {
+  description = "The name of the vpc"
   type = string
-  default = "ryan-cafe"
 }
 
 variable "alb_security_group_id" {
@@ -47,7 +46,6 @@ variable "enable_deletion_protection" {
 variable "target_group_port" {
   description = "Desired target port for target group"
   type = number
-  default = 5000
   validation {
     condition = var.target_group_port >= 0 && var.target_group_port <= 65535
     error_message = "Target group port must be between 0 and 65535"
@@ -57,19 +55,17 @@ variable "target_group_port" {
 variable "target_type" {
   description = "The target type. Example: 'instance' or 'ip'"
   type = string
-  default = "instance"
 }
 
 variable "health_check_path" {
   description = "Desired HTTP path for health checks"
   type = string
-  default = "/health"
+
 }
 
 variable "health_check_interval" {
   description = "Interval in seconds between health checks"
   type = number
-  default = 45
   validation {
     condition = var.health_check_interval >= 5 && var.health_check_interval <= 300
     error_message = "Health check interval must be between 5 and 300 seconds"
@@ -88,4 +84,10 @@ variable "certificate_arn" {
 variable "certificate_validation" {
   description = "The validation ID of the ACM certificate"
   type = string
+}
+
+variable "common_tags" {
+  description = "Common tags for each resource"
+  type = map(string)
+  default = {}
 }

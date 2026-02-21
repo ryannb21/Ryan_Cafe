@@ -1,9 +1,17 @@
+#General Variables
 variable "aws_region" {
   description = "Desired region within which resources are provisioned"
   type        = string
   default     = "us-east-1"
 }
 
+variable "common_tags" {
+  description = "Common tags applied to each resource"
+  type        = map(string)
+  default     = {}
+}
+
+#VPC Variables
 variable "vpc_cidr_block" {
   description = "The value of your vpc CIDR block"
   type        = string
@@ -14,54 +22,33 @@ variable "vpc_name" {
   type        = string
 }
 
+#Subnet Variables
 variable "subnet_configs" {
   description = "Description found within modules/subnets/variables.tf"
   type = map(object({
     cidr_block        = string
     availability_zone = string
     public            = bool
+    tier              = string
   }))
 }
 
-variable "igw_name" {
-  description = "The name to identify your IGW"
-  type        = string
-}
-
-variable "eip_configs" {
-  description = "Description found within modules/eip/variables.tf"
+#Security Group Variables/Config
+variable "security_groups" {
+  description = "Map of VPC names to their security group configurations"
   type = map(object({
-    name = string
+    description = string
+    ingress_rules = list(object({
+      from_port   = number
+      to_port     = number
+      protocol    = string
+      cidr_blocks = optional(list(string))
+      source_sg   = optional(string)
+    }))
   }))
 }
 
-variable "public_subnet_keys" {
-  description = <<EOF
-  A list of subnet keys from subnet_configs that should host NAT Gateway
-  EOF
-  type        = list(string)
-}
-
-variable "app_subnet_keys" {
-  description = "A list of the private app subnets"
-  type        = list(string)
-}
-
-variable "db_subnet_keys" {
-  description = "A list of the private db subnets"
-  type        = list(string)
-}
-
-variable "public_rt_name" {
-  type        = string
-  description = "Name tag for the public route table"
-}
-
-variable "sg_name_prefix" {
-  description = "Prefix for all security group names"
-  type        = string
-}
-
+#Route53 Variables
 variable "main_zone_name" {
   description = "The name of your actual main domain name"
   type        = string
@@ -72,31 +59,76 @@ variable "sub_record_name" {
   type        = string
 }
 
+#ACM_Certificate Variables
 variable "domain_name" {
   description = "The hosted zone domain name"
   type        = string
 }
 
-variable "lb_name_prefix" {
-  description = "Prefix for all load balancer names"
-  type        = string
-  default     = "ryan-cafe"
-}
-
+#Load Balancer Variables
 variable "target_group_port" {
   description = "Desired target port for target group"
   type        = number
 }
 
+variable "target_type" {
+  description = "The target type. Example: 'instance' or 'ip'"
+  type        = string
+}
+
+variable "health_check_path" {
+  description = "Desired HTTP path for health checks"
+  type        = string
+}
+
 variable "health_check_interval" {
   description = "Interval in seconds between health checks"
   type        = number
-  default     = 30
 }
 
+#SQS_Queue Variables
+variable "queue_name" {
+  description = "Name of the main order events queue"
+  type        = string
+}
+
+variable "dlq_name" {
+  description = "Name of the dead-letter queue"
+  type        = string
+}
+
+#SES_Service Variables
+variable "mail_from_subdomain" {
+  description = "Subdomain for MAIL FROM"
+  type        = string
+}
+
+#Lambda Variables
+variable "lambda_function_name" {
+  description = "Lambda function name"
+  type        = string
+}
+
+variable "from_email" {
+  description = "Verified FROM address under the SES-verified domain (e.g. orders@ryanb-lab.com)"
+  type        = string
+}
+
+variable "reply_to" {
+  description = "Optional reply-to address"
+  type        = string
+}
+
+#SNS_Topic Variables
 variable "sns_topic_subscriber_email" {
   description = "The desired email to subscribe to the SNS Topic"
   type        = list(string)
+}
+
+#CloudWatch Variables
+variable "dashboard_name" {
+  description = "The CloudWatch dashboard name"
+  type        = string
 }
 
 variable "cw_high_eval_periods" {
@@ -117,51 +149,43 @@ variable "cw_high_cpu_threshold" {
   default     = 75
 }
 
-variable "cw_low_eval_periods" {
-  description = "The number of times the metric is evaluated for"
-  type        = number
-  default     = 2
-}
-
-variable "cw_low_cpu_eval_duration" {
-  description = "The duration of time for an eval period"
-  type        = number
-  default     = 60
-}
-
-variable "cw_low_cpu_threshold" {
-  description = "The CPUUtil mark to watch for on instance before triggering alarm"
-  type        = number
-  default     = 30
-}
-
+# EC2 Variables
 variable "instance_type" {
   type        = string
   description = "The instance type"
   default     = "t2.micro"
 }
 
-variable "cafe_ecr_repo_name" {
-  description = "The desired name for the cafe ecr repo"
+#ECR Variables
+variable "repo_names" {
+  description = "Map of repo keys to repo names"
+  type        = map(string)
+}
+
+#ECS Variables
+variable "family" {
+  description = "Base name used for ECS family/service names"
+}
+
+variable "ecs_cluster_name" {
+  description = "Name of the ECS cluster"
   type        = string
 }
 
-variable "flask_secret_name" {
-  type = string
+variable "ecs_log_group_name" {
+  description = "CloudWatch log group name"
+  type        = string
 }
 
-variable "email_secret_name" {
-  type = string
+variable "service_discovery_namespace_name" {
+  description = "Private DNS namespace name"
+  type        = string
 }
 
-variable "db_secret_name" {
-  type = string
-}
-
+#RDS Variables
 variable "db_identifier" {
   description = "The desired identifier for the DB"
   type        = string
-  default     = "cafe-mysql-db"
 }
 
 variable "db_instance_class" {
@@ -192,26 +216,27 @@ variable "db_password" {
   sensitive   = true
 }
 
+#Secrets Manager Variables
 variable "secret_prefix" {
   description = "Prefix for naming the secrets"
   type        = string
-}
-
-variable "email_addr" {
-  description = "Desired email through which order confirmations are sent"
-  type        = string
-}
-
-variable "email_password" {
-  description = "The App Password (Gmail) used alongside the email"
-  type        = string
-  sensitive   = true
 }
 
 variable "app_key" {
   description = "The App secret key"
   type        = string
   sensitive   = true
+}
+
+#WAF Variables
+variable "cafe_waf_prefix" {
+  type        = string
+  description = "The name prefix associated with all WAF resources"
+}
+
+variable "waf_scope" {
+  type        = string
+  description = "The scope for the WAF"
 }
 
 variable "blocked_ips" {

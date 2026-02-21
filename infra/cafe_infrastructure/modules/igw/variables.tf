@@ -3,8 +3,13 @@ variable "vpc_id" {
   type = string
 }
 
-variable "igw_name" {
-  description = "The name to identify your IGW"
+variable "vpc_name" {
+  description = "The name of the vpc"
   type = string
-  default = "Cafe_IGW"
+}
+
+variable "common_tags" {
+  description = "Common tags for each resource"
+  type = map(string)
+  default = {}
 }

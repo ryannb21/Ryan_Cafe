@@ -36,25 +36,6 @@ variable "db_password" {
   }
 }
 
-variable "email_addr" {
-  description = "Desired email through which order confirmations are sent"
-  type = string
-  validation {
-    condition = can(regex(".+@.+\\..+", var.email_addr))
-    error_message = "Your email_addr must be a valid email address"
-  }
-}
-
-variable "email_password" {
-  description = "The App Password (Gmail) used alongside the email"
-  type = string
-  sensitive = true
-  validation {
-    condition = length(var.email_password) >= 16
-    error_message = "The generated email_password must be 16 characters long"
-  }
-}
-
 variable "app_key" {
   description = <<EOF
   "The Flask secret key used to sign session cookies and CSRF tokens.

@@ -13,3 +13,9 @@ variable "vpc_flow_logs_bucket_name" {
   type = string
   default = "cafe-vpc-flow-logs"
 }
+
+variable "common_tags" {
+  description = "Common tags for resources"
+  type = map(string)
+  default = {}
+}

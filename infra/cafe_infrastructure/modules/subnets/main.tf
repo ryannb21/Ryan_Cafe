@@ -7,8 +7,9 @@ resource "aws_subnet" "ryan_cafe_subnets" {
   availability_zone = each.value.availability_zone
   map_public_ip_on_launch = each.value.public
 
-  tags = {
-    "Name" = each.key
+  tags = merge(var.common_tags, {
+    Name = "${var.vpc_name}-${each.key}"
     Type = each.value.public ? "public" : "private"
-  }
+    Tier = each.value.tier
+  })
 }

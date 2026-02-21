@@ -27,11 +27,11 @@ resource "aws_db_instance" "cafe_db" {
   backup_retention_period = 7
   backup_window = "03:00-04:00"
   publicly_accessible =  false
-  multi_az =  true
+  # multi_az =  true # IT IS IMPERATIVE TO TURN THIS ON IN PRODUCTION, COMMENTED OUT HERE FOR COST CONTROL
   storage_encrypted = true
   
 
-  tags = {
-    "Name" = "cafe_RDS_MySQL"
-  }
+  tags = merge(var.common_tags, {
+    "Name" = "${var.vpc_name}-Database-MySQL"
+  })
 }

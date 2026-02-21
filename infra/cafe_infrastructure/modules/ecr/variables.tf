@@ -1,4 +1,10 @@
-variable "cafe_ecr_repo_name" {
-  description = "The desired name for the cafe ecr repo"
-  type        = string
+variable "repo_names" {
+  description = "Map of repo keys to repo names"
+  type        = map(string)
+}
+
+variable "common_tags" {
+  description = "Common tags for resources"
+  type = map(string)
+  default = {}
 }

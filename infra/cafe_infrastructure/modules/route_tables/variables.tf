@@ -3,41 +3,34 @@ variable "vpc_id" {
   description = "The ID of the VPC"
 }
 
+variable "vpc_name" {
+  description = "Name of the parent VPC for route table naming"
+  type = string
+}
+
 variable "igw_id" {
   type        = string
   description = "The Internet Gateway ID"
 }
 
-variable "public_subnet_ids" {
-  type        = map(string)
-  description = "Map of public subnet keys → subnet IDs"
-  validation {
-    condition     = length(var.public_subnet_ids) > 0
-    error_message = "You must provide at least one public subnet"
-  }
-}
-
-variable "app_subnet_ids" {
-  type        = map(string)
-  description = "Map of private-app subnet keys → subnet IDs"
-}
-
-variable "db_subnet_ids" {
-  type        = map(string)
-  description = "Map of private-db subnet keys → subnet IDs"
+variable "subnet_configs" {
+  description = "Map of subnet configurations with their details including tier"
+  type = map(object({
+    subnet_id         = string
+    availability_zone = string
+    public            = bool
+    tier              = string
+  }))
 }
 
 variable "nat_gateway_ids" {
-  type        = map(string)
-  description = "Map of NAT gateway keys → allocation IDs"
-  validation {
-    condition     = length(var.nat_gateway_ids) > 0
-    error_message = "You must provide at least one NAT gateway"
-  }
+  description = "Map of NAT Gateway IDs by AZ"
+  type = map(string)
+  default = {}
 }
 
-variable "public_rt_name" {
-  type        = string
-  description = "Name tag for the public route table"
-  default = "Cafe_Public_RT"
+variable "common_tags" {
+  description = "Common tags for each resource"
+  type = map(string)
+  default = {}
 }

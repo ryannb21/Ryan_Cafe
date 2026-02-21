@@ -85,7 +85,11 @@ resource "aws_wafv2_web_acl" "cafe_waf_acl" {
             }
             text_transformation {
               priority = 0
-              type     = "NONE"
+              type     = "URL_DECODE"
+            }
+            text_transformation {
+              priority = 1
+              type = "LOWERCASE"
             }
           }
         }
@@ -97,7 +101,11 @@ resource "aws_wafv2_web_acl" "cafe_waf_acl" {
             }
             text_transformation {
               priority = 0
-              type     = "NONE"
+              type     = "URL_DECODE"
+            }
+            text_transformation {
+              priority = 1
+              type = "LOWERCASE"
             }
           }
         }
@@ -125,6 +133,17 @@ resource "aws_wafv2_web_acl" "cafe_waf_acl" {
       rate_based_statement {
         limit              = 100
         aggregate_key_type = "IP"
+
+        scope_down_statement {
+          not_statement {
+            statement {
+              label_match_statement {
+                scope = "LABEL"
+                key = "cafe:benign-ua"
+              }
+            }
+          }
+        }
       }
     }
 
@@ -147,6 +166,17 @@ resource "aws_wafv2_web_acl" "cafe_waf_acl" {
       rate_based_statement {
         limit              = 200
         aggregate_key_type = "IP"
+
+        scope_down_statement {
+          not_statement {
+            statement {
+              label_match_statement {
+                scope = "LABEL"
+                key = "cafe:benign-ua"
+              }
+            }
+          }
+        }
       }
     }
 
@@ -206,6 +236,9 @@ resource "aws_wafv2_web_acl" "cafe_waf_acl" {
     action {
       count {}
     }
+    rule_label {
+      name = "cafe:benign-ua"
+    }
 
     visibility_config {
       cloudwatch_metrics_enabled = true
@@ -255,6 +288,28 @@ resource "aws_wafv2_web_acl" "cafe_waf_acl" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "${var.cafe_waf_prefix}-managed-bad-inputs"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "aws-managed-ip-reputation"
+    priority = 12
+
+    override_action {
+      none {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesAmazonIpReputationList"
+        vendor_name = "AWS"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${var.cafe_waf_prefix}-managed-ip-reputation"
       sampled_requests_enabled   = true
     }
   }

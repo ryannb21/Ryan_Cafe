@@ -7,7 +7,7 @@ This is a production-ready cafe ordering system built with modern DevOps practic
 
 ## Live Demo
 Feel free to place an order via the website:
-**Website:** [https://cafe.ryanb-lab.com](https://cafe.ryanb-lab.com)
+**Website:** [https://cafe.ryan-lab.com](https://cafe.ryan-lab.com)
 
 
 ## Architecture Overview
