@@ -119,7 +119,7 @@ from_email = "orders"
 reply_to = "support"
 
 #SNS_Topic Variables
-sns_topic_subscriber_email = [] #G.A Sec
+#sns_topic_subscriber_email is provided via TF_VAR environment variable in GitHub Actions
 
 #CloudWatch Variables
 dashboard_name = "Cafe-Ops-Dashboard"
@@ -158,14 +158,12 @@ db_allocated_storage = 20
 
 db_name = "cafe_orders"
 
-db_username = "" #G.A Sec
-
-db_password = "" #G.A Sec
+#db_username and db_password are provided via TF_VAR environment variables in GitHub Actions
 
 #Secrets Manager Variables
 secret_prefix = "ryan-cafev82"
 
-app_key = "" #G.A Sec
+#app_key is provided via TF_VAR environment variable in GitHub Actions
 
 #WAF Variables
 cafe_waf_prefix = "cafe_waf"
