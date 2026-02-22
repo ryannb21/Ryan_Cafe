@@ -161,7 +161,7 @@ db_name = "cafe_orders"
 #db_username and db_password are provided via TF_VAR environment variables in GitHub Actions
 
 #Secrets Manager Variables
-secret_prefix = "ryan-cafev82"
+secret_prefix = "ryan-cafev83"
 
 #app_key is provided via TF_VAR environment variable in GitHub Actions
 
