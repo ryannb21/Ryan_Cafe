@@ -29,6 +29,7 @@ resource "aws_service_discovery_service" "orders_sd" {
     routing_policy = "MULTIVALUE"
   }
   health_check_config {
+    type = "TCP"
     failure_threshold = 1
   }
 }
