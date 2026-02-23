@@ -109,19 +109,19 @@ jobs:
           RESOURCE_COUNT=$(terraform state list 2>/dev/null | wc -l)
           
           if [ "$RESOURCE_COUNT" -eq 0 ]; then
-            echo "❌ ERROR: State file exists but is empty!"
+            echo "ERROR: State file exists but is empty!"
             echo "This indicates orphaned resources in AWS."
             echo "Run destroy workflow first, then redeploy."
             exit 1
           else
-            echo "✅ State file valid with $RESOURCE_COUNT resources tracked"
+            echo "State file valid with $RESOURCE_COUNT resources tracked"
           fi
         else
           echo "No state file found - proceeding with fresh deployment"
           
           # Check if critical resources already exist (would indicate orphaned resources)
           if aws ecr describe-repositories --repository-names ryan-cafe-web 2>/dev/null; then
-            echo "❌ ERROR: ECR repository exists but no state file found!"
+            echo "ERROR: ECR repository exists but no state file found!"
             echo "Orphaned resources detected. Run destroy workflow first."
             exit 1
           fi
