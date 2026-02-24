@@ -157,7 +157,7 @@ ecs_log_group_name = "/aws/ecs/ryan-cafe"
 service_discovery_namespace_name = "cafe.local"
 
 #Redis Variables
-redis_cluster_id = "cafe-redis"
+redis_cluster_id = "cafe-redis-rg"
 
 redis_node_type = "cache.t4g.micro"
 
