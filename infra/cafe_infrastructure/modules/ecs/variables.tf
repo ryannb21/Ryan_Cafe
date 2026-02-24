@@ -94,6 +94,18 @@ variable "order_events_queue_url" {
   type        = string
 }
 
+#Redis Variables
+variable "redis_endpoint" {
+  description = "Redis cluster endpoint"
+  type        = string
+}
+
+variable "redis_port" {
+  description = "Redis cluster port"
+  type        = number
+  default     = 6379
+}
+
 #Desired counts variables
 variable "web_desired_count" {
   type    = number

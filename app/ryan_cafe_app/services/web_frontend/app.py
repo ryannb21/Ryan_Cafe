@@ -1,8 +1,10 @@
 import os
 import requests
-from flask import Flask, render_template, request, redirect, url_for, flash, abort
+from flask import Flask, render_template, request, redirect, url_for, flash, abort, session
 from flask_wtf.csrf import CSRFProtect
+from flask_session import Session
 from email_validator import validate_email, EmailNotValidError
+import redis
 
 app = Flask(__name__)
 
@@ -48,6 +50,35 @@ def set_security_headers(response):
 # In ECS you will load this from Secrets Manager and inject as env var FLASK_SECRET_KEY.
 # For local dev, this fallback prevents hard failure.
 app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY", "dev-only-change-me")
+
+# Redis session configuration
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
+
+try:
+    redis_client = redis.Redis(
+        host=REDIS_HOST,
+        port=REDIS_PORT,
+        decode_responses=True,
+        socket_connect_timeout=5,
+        socket_timeout=5
+    )
+    # Test connection
+    redis_client.ping()
+    
+    # Configure Flask-Session to use Redis
+    app.config["SESSION_TYPE"] = "redis"
+    app.config["SESSION_REDIS"] = redis_client
+    app.config["SESSION_PERMANENT"] = False
+    app.config["SESSION_USE_SIGNER"] = True
+    Session(app)
+    
+    REDIS_AVAILABLE = True
+except (redis.ConnectionError, redis.TimeoutError) as e:
+    print(f"Redis unavailable, falling back to client-side sessions: {e}")
+    REDIS_AVAILABLE = False
+    # Flask will use default signed cookie sessions
+
 csrf = CSRFProtect(app)
 
 # Orders service discovery base URL (ECS uses Cloud Map name)
@@ -55,7 +86,7 @@ ORDERS_BASE_URL = os.getenv("ORDERS_BASE_URL", "http://orders.cafe.local:5001")
 ORDERS_TIMEOUT_SEC = float(os.getenv("ORDERS_TIMEOUT_SEC", "5.0"))
 
 # =========================
-# Menu data (YOUR OG MENU)
+# Menu data (Original Menu)
 # =========================
 
 COFFEES = [
@@ -78,16 +109,49 @@ MENU = {item["flavor"]: item["price"] for item in COFFEES}
 MENU.update({item["name"]: item["price"] for item in DESSERTS})
 
 # =========================
+# Helper: Menu caching
+# =========================
+
+def get_cached_menu():
+    """Get menu from Redis cache or fallback to in-memory."""
+    if not REDIS_AVAILABLE:
+        return {"coffees": COFFEES, "desserts": DESSERTS}
+    
+    try:
+        # Try to get from cache
+        cached = redis_client.get("menu:data")
+        if cached:
+            import json
+            return json.loads(cached)
+        
+        # Cache miss - store for 1 hour
+        menu_data = {"coffees": COFFEES, "desserts": DESSERTS}
+        redis_client.setex("menu:data", 3600, json.dumps(menu_data))
+        return menu_data
+    except (redis.ConnectionError, redis.TimeoutError):
+        return {"coffees": COFFEES, "desserts": DESSERTS}
+
+# =========================
 # Routes
 # =========================
 
 @app.get("/health")
 def health():
-    return {"service": "web_frontend", "status": "ok"}, 200
+    redis_status = "connected" if REDIS_AVAILABLE else "unavailable"
+    return {"service": "web_frontend", "status": "ok", "redis": redis_status}, 200
 
 @app.route("/")
 def index():
-    return render_template("index.html", coffees=COFFEES, desserts=DESSERTS)
+    # Track page views in session (demonstrates Redis session storage)
+    session["page_views"] = session.get("page_views", 0) + 1
+    
+    # Get menu from cache
+    menu_data = get_cached_menu()
+    return render_template(
+        "index.html",
+        coffees=menu_data["coffees"],
+        desserts=menu_data["desserts"]
+    )
 
 @app.route("/order", methods=["POST"])
 def place_order():
