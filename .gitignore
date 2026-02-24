@@ -30,3 +30,5 @@ infra/cafe_infrastructure/modules/autoscaling_group/*
 after_redis.txt
 before_redis.txt
 after_redis.txt
+before_redis.txt
+after_redis.txt
