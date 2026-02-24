@@ -10,10 +10,10 @@ resource "aws_elasticache_replication_group" "redis" {
   replication_group_id       = var.cluster_id
   description                = "Valkey replication group"
   engine                     = "valkey"
-  engine_version             = "7.2"
+  engine_version             = "8.1"
   node_type                  = var.node_type
   num_cache_clusters         = 1
-  parameter_group_name       = "default.valkey7"
+  parameter_group_name       = "default.valkey8"
   port                       = 6379
   subnet_group_name          = aws_elasticache_subnet_group.redis_subnet_group.name
   security_group_ids         = [var.security_group_id]
