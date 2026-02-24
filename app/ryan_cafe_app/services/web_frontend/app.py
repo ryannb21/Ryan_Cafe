@@ -1,5 +1,6 @@
 import os
 import requests
+import json
 from flask import Flask, render_template, request, redirect, url_for, flash, abort, session
 from flask_wtf.csrf import CSRFProtect
 from flask_session import Session
@@ -121,7 +122,6 @@ def get_cached_menu():
         # Try to get from cache
         cached = redis_client.get("menu:data")
         if cached:
-            import json
             return json.loads(cached)
         
         # Cache miss - store for 1 hour
