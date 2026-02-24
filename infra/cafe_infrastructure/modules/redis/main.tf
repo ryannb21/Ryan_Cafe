@@ -5,7 +5,7 @@ resource "aws_elasticache_subnet_group" "redis_subnet_group" {
   tags       = var.common_tags
 }
 
-# ElastiCache Replication Group (Valkey 7.2)
+# ElastiCache Replication Group (Valkey 7.1)
 resource "aws_elasticache_replication_group" "redis" {
   replication_group_id       = var.cluster_id
   description                = "Valkey replication group"
