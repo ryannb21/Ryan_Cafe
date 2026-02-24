@@ -200,7 +200,9 @@ module "ecs" {
   flask_secret_name                = module.secrets_manager.app_secret_name
   db_secret_name                   = module.secrets_manager.db_secret_name
   order_events_queue_url           = module.sqs_queue.order_events_queue_url
-  depends_on                       = [module.ecr, module.load_balancer, module.iam_roles, module.sqs_queue]
+  redis_endpoint                   = module.redis.redis_endpoint
+  redis_port                       = module.redis.redis_port
+  depends_on                       = [module.ecr, module.load_balancer, module.iam_roles, module.sqs_queue, module.redis]
 }
 
 module "rds" {
@@ -215,6 +217,16 @@ module "rds" {
   db_password          = var.db_password
   vpc_name             = module.vpc.vpc_name
   common_tags          = var.common_tags
+}
+
+module "redis" {
+  source              = "./modules/redis"
+  cluster_id          = var.redis_cluster_id
+  node_type           = var.redis_node_type
+  subnet_group_name   = var.redis_subnet_group_name
+  subnet_ids          = module.subnets.app_subnet_ids
+  security_group_id   = module.security_group.security_group_ids["redis"]
+  common_tags         = var.common_tags
 }
 
 module "secrets_manager" {

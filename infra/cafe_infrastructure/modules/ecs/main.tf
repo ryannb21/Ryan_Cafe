@@ -54,7 +54,9 @@ resource "aws_ecs_task_definition" "web_task" {
         {name = "AWS_REGION", value = var.aws_region},
         {name = "FLASK_CAFE_SECRET_NAME", value = var.flask_secret_name},
         {name = "ORDERS_BASE_URL", value = "http://orders.${var.service_discovery_namespace_name}:5001"},
-        {name = "ORDERS_TIMEOUT_SEC", value = "5.0"}
+        {name = "ORDERS_TIMEOUT_SEC", value = "5.0"},
+        {name = "REDIS_HOST", value = var.redis_endpoint},
+        {name = "REDIS_PORT", value = tostring(var.redis_port)}
       ]
 
       logConfiguration = {

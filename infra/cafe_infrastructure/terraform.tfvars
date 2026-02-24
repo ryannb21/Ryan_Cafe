@@ -84,6 +84,13 @@ security_groups = {
       { from_port = 3306, to_port = 3306, protocol = "tcp", cidr_blocks = null, source_sg = "db_admin_ec2" }
     ]
   }
+  "redis" = {
+    description = "Allows Redis access from ECS services"
+    ingress_rules = [
+      { from_port = 6379, to_port = 6379, protocol = "tcp", cidr_blocks = null, source_sg = "ecs_web_frontend" },
+      { from_port = 6379, to_port = 6379, protocol = "tcp", cidr_blocks = null, source_sg = "ecs_order_service" }
+    ]
+  }
 }
 
 #Route53 Variables
@@ -148,6 +155,13 @@ ecs_cluster_name = "cafe-ecs-cluster"
 ecs_log_group_name = "/aws/ecs/ryan-cafe"
 
 service_discovery_namespace_name = "cafe.local"
+
+#Redis Variables
+redis_cluster_id = "cafe-redis"
+
+redis_node_type = "cache.t4g.micro"
+
+redis_subnet_group_name = "cafe-redis-subnet-group"
 
 #RDS Variables
 db_identifier = "cafe-mysql-db"

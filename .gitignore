@@ -26,4 +26,7 @@ infra/cafe_infrastructure/modules/autoscaling_group/*
 ###Log files, IDE, and OS artifacts###
 *.log
 .vscode/
-.DS_Store
+.DS_Storebefore_redis.txt
+after_redis.txt
+before_redis.txt
+after_redis.txt

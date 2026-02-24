@@ -118,6 +118,16 @@ output "rds_arn" {
 }
 
 
+#From modules/redis
+output "redis_endpoint" {
+  value = module.redis.redis_endpoint
+}
+
+output "redis_connection_string" {
+  value = module.redis.redis_connection_string
+}
+
+
 #From modules/secrets_manager
 output "db_secret_arn" {
   value = module.secrets_manager.db_secret_arn

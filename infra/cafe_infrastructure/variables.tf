@@ -182,6 +182,23 @@ variable "service_discovery_namespace_name" {
   type        = string
 }
 
+#Redis Variables
+variable "redis_cluster_id" {
+  description = "ElastiCache Redis cluster identifier"
+  type        = string
+}
+
+variable "redis_node_type" {
+  description = "ElastiCache node type"
+  type        = string
+  default     = "cache.t4g.micro"
+}
+
+variable "redis_subnet_group_name" {
+  description = "Name for Redis subnet group"
+  type        = string
+}
+
 #RDS Variables
 variable "db_identifier" {
   description = "The desired identifier for the DB"
