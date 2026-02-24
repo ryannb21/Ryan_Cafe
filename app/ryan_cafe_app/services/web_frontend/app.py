@@ -59,7 +59,6 @@ try:
     redis_client = redis.Redis(
         host=REDIS_HOST,
         port=REDIS_PORT,
-        decode_responses=True,
         socket_connect_timeout=5,
         socket_timeout=5
     )
@@ -74,10 +73,11 @@ try:
     Session(app)
     
     REDIS_AVAILABLE = True
-except (redis.ConnectionError, redis.TimeoutError) as e:
+    print("Redis connected successfully")
+except (redis.ConnectionError, redis.TimeoutError, redis.ResponseError) as e:
     print(f"Redis unavailable, falling back to client-side sessions: {e}")
     REDIS_AVAILABLE = False
-    # Flask will use default signed cookie sessions
+    redis_client = None
 
 csrf = CSRFProtect(app)
 
@@ -114,7 +114,7 @@ MENU.update({item["name"]: item["price"] for item in DESSERTS})
 
 def get_cached_menu():
     """Get menu from Redis cache or fallback to in-memory."""
-    if not REDIS_AVAILABLE:
+    if not REDIS_AVAILABLE or redis_client is None:
         return {"coffees": COFFEES, "desserts": DESSERTS}
     
     try:
