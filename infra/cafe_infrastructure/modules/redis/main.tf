@@ -18,6 +18,7 @@ resource "aws_elasticache_replication_group" "redis" {
   subnet_group_name          = aws_elasticache_subnet_group.redis_subnet_group.name
   security_group_ids         = [var.security_group_id]
   automatic_failover_enabled = false
+  maintenance_window         = "sun:03:00-sun:04:00"
   apply_immediately          = true
   
   tags = var.common_tags
